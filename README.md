@@ -6,16 +6,26 @@ tenth of the size (single <500loc C file).
 ## Usage
 For single-file documents:
 ```bash
-orguli -s readme.md style.css > readme.html
+orguli -s README.md style.css > readme.html
 ```
 
-For inline html (like piping into static site generators):
+For part of a larger document (to concatenate/process/pipe content):
 ```bash
-# Processes and converts all html files to md
-for file in *.html
+# Processes and converts all md files to html
+for file in *.md
 do
-    process-file $file | orguli /dev/stdin style.css > ${file%.html}.md
+    htmlfile=${file%.md}.html
+    cat header.html >> $htmlfile
+    process-file $file | orguli >> $htmlfile
+    cat footer.html >> $htmlfile
 done
+```
+
+To pipe content to orguli and specify a stylesheet at the same time, specify
+`/dev/stdin` as the input markdown file:
+```
+# Use /dev/stdin as the file
+cat README.md | orguli /dev/stdin style.css | sed 's/http:/https:/g' > out.html
 ```
 
 I use orguli to render README files in my [private git repositories](https://git.nikaoto.com)
@@ -61,7 +71,7 @@ be abandoned. Here is a list of the changes I introduced.
 - support for `![inline images](image_link)]`
 - support for nested fenced code blocks
 - support for `<pre><code> code blocks </code></pre>` with edge2
-- add support nested lists (only two levels deep!)
+- support fot nested lists (only 2 levels deep!)
 - single line lookahead (to support h1 and h2 with `====` and h2 `----`)
 - `-s|--single-file` option, which outputs `<head>` and others. When omitted,
   output without `<head>`
