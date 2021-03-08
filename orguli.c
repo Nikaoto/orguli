@@ -29,8 +29,9 @@ enum {
   IND    = 1 << 13, /* on when inside indentation */
 };
 
-int indentation = 0; /* for determining indented code blocks */
-int nesting = 0; /* for determining nested list items */
+int cur_line_empty = 0, prev_line_empty = 0; /* for indented code blocks */
+int indentation = 0; /* for indented fenced code blocks */
+int nesting = 0; /* for nested list items */
 
 int write_text(FILE *fp, char *text, int flags);
 
@@ -226,26 +227,29 @@ top:
       }
     }
 
-    if (*p == '\\') {
-      p++;
+    if (*p == '\\' || flags & CODE) {
+      if (*p == '\\') { p++; }
       switch (*p) {
         case '<' : fprintf(fp, "&lt;");   break;
         case '>' : fprintf(fp, "&gt;");   break;
         case '&' : fprintf(fp, "&amp;");  break;
         case '"' : fprintf(fp, "&quot;"); break;
         case '\'': fprintf(fp, "&apos;"); break;
-        default  : break;
+        default  : fputc(*p, fp);         break;
       }
+    } else {
+      fputc(*p, fp);
     }
 
     if (*p == '\0')
       return flags;
-
-    fputc(*p, fp);
   }
 }
 
 int process_line(FILE *fp, char *line, char *nextline, int flags) {
+  /* empty line */
+  if (consume(&line, "\n")) { cur_line_empty = 1; return flags; }
+
   /* header underline, skip line */
   if (consume(&line, "====")) { return flags; }
   if (consume(&line, "----")) { return flags; }
@@ -338,7 +342,8 @@ int process_line(FILE *fp, char *line, char *nextline, int flags) {
   if (consume(&line, "##### ")) { flags = edge(fp, flags, H5, "h5"); }
 
   /* indented code block */
-  if (spaces > nesting && nextline[0] == '\n') {
+  /* TODO: check if spaces > nesting bugs */
+  if (spaces > nesting && nextline[0] == '\n' && prev_line_empty) {
     flags = edge2(fp, flags, PRE | CODE, "pre", "code");
     flags = write_text(fp, line, flags);
     return edge2(fp, flags, PRE | CODE, "pre", "code");
@@ -411,6 +416,8 @@ int main(int argc, char **argv) {
 
   while (fgets(next, LINEBUF_SIZE, in)) {
     flags = process_line(stdout, cur, next, flags);
+    prev_line_empty = cur_line_empty;
+    cur_line_empty = 0;
 
     /* swap buffers */
     tmp = cur;
