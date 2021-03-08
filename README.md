@@ -62,7 +62,7 @@ be abandoned. Here is a list of the changes I introduced.
 - support for nested fenced code blocks
 - support for `<pre><code> code blocks </code></pre>` with edge2
 - add support nested lists (only two levels deep!)
-- single line lookahead (to support h1 and h2 with '====' and h2 '----')
+- single line lookahead (to support h1 and h2 with `====` and h2 `----`)
 - `-s|--single-file` option, which outputs `<head>` and others. When omitted,
   output without `<head>`
 - `-h|--help` option
@@ -72,7 +72,7 @@ be abandoned. Here is a list of the changes I introduced.
 - fix for false em, strike, and strong detection on separate chars:<br>
   `2 * 10` will no longer turn into `2 <em> 10`, but `2 *10` will correctly turn
   into `2 <em>10`
-- support for `<hr>` (--- for `<hr>`, === for `<hr class="thick">`)
+- support for `<hr>` (`---` for `<hr>`, `===` for `<hr class="thick">`)
 - support for inline html, including `<br>` tags
 - comments where necessary
 - `.markdown-body` class to main `<div>` or `<body>`
@@ -80,8 +80,8 @@ be abandoned. Here is a list of the changes I introduced.
 - support for h4 and h5
 - support for indented code blocks
 
-  this will be turned into code
-  
+    this will be turned into code
+
 Just like
 ```
 this fenced code block
@@ -91,7 +91,8 @@ this fenced code block
 - dependency on `stdbool.h`
 - static scope specifiers from all functions
 - automatic escape on all text; If you want something escaped, use
-  backslashes. For example: `\<` turns into `&lt;`
+  backslashes.<br>
+  For example, `\<` turns into `&lt;`
 
 ## License
 This library is free software; you can redistribute is and/or modify it under
