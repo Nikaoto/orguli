@@ -24,7 +24,7 @@ done
 To pipe content to orguli and specify a stylesheet at the same time, specify
 `/dev/stdin` as the input markdown file:
 ```
-# Use /dev/stdin as the file
+# Use /dev/stdin as the input file
 cat README.md | orguli /dev/stdin style.css | sed 's/http:/https:/g' > out.html
 ```
 
