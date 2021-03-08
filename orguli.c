@@ -81,7 +81,7 @@ int write_embedded(FILE *fp, char **p, int flags) {
     if (strstr(name, ".png") || strstr(name, ".jpg") || strstr(name, ".gif")) {
       fprintf(fp, "<img src=\"data:image;base64, ");
       write_b64_fp(fp, in);
-      fprintf(fp, "\"/>");
+      fprintf(fp, "\"/>\n");
     } else {
       write_fp(fp, in);
     }
@@ -115,7 +115,7 @@ int write_img(FILE *fp, char **p, int flags) {
   if (consume(p, "](")) {
     *p = copy_until(url, *p, ")");
     consume(p, ")");
-    fprintf(fp, "<a href=\"%s\"><img alt=\"%s\" src=\"%s\" /></a>", url, text, url);
+    fprintf(fp, "<a href=\"%s\"><img alt=\"%s\" src=\"%s\" /></a>\n", url, text, url);
     return flags;
   } else {
     fputc('[', fp);
