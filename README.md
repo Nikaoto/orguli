@@ -1,9 +1,7 @@
 # orguli
 orguli is a small tool that takes a markdown file with an optional style sheet
-and outputs html.
-
-The only feature in orguli not present in markdown is the `@filename` specifier,
-which embeds images and text directly.
+and outputs html. It does half of what fully-fledged markdown parsers do with a
+tenth of the size (single <500loc C file).
 
 ## Usage
 For single-file documents:
@@ -36,6 +34,23 @@ Run `./build.sh` and then `sudo install -m755 orguli /usr/local/bin/.`
   I've found that it's faster to just extend orguli than learn the quirks of
   some large parser though trial and error. orguli also has it's quirks as well,
   but they're easier to learn and avoid.
+- Other parsers are meant for untrusted use. orguli has no security at all and
+  is only to be used by trusted users. This might seem like a disadvantage, but
+  lack of security allows for less and easier to understand and modify code.
+  When I just want a simple `md2html` binary for my website, I don't care about
+  XSS attacks. I can probably trust myself not to pwn me.
+
+## Limitations
+orguli complies with the *right* half of markdown, meaning the parts which most
+people know and use, mostly in their READMEs.
+
+Due to the design, anything that can't be determined with a single-line
+lookahead will forever be unsupported. This includes footnotes, reflinks, and
+nesting levels higher than 2.
+
+The only extra feature not present in markdown is the `@filename` specifier,
+which embeds images and text directly. This is extremely useful for single-file
+documents.
 
 ## Changes
 orguli is a fork of rxi's [doq](https://github.com/rxi/doq), which now seems to
