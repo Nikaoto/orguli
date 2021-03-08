@@ -351,7 +351,8 @@ int process_line(FILE *fp, char *line, char *nextline, int flags) {
   if (flags & H1) { flags = drop_inlines(fp, edge(fp, flags, H1, "h1")); }
   if (flags & H2) { flags = drop_inlines(fp, edge(fp, flags, H2, "h2")); }
   if (flags & H3) { flags = drop_inlines(fp, edge(fp, flags, H3, "h3")); }
-  if (flags & H4) { flags = drop_inlines(fp, edge(fp, flags, H3, "h4")); }
+  if (flags & H4) { flags = drop_inlines(fp, edge(fp, flags, H4, "h4")); }
+  if (flags & H5) { flags = drop_inlines(fp, edge(fp, flags, H5, "h5")); }
   return flags;
 }
 
