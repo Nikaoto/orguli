@@ -248,7 +248,7 @@ top:
 
 int process_line(FILE *fp, char *line, char *nextline, int flags) {
   /* empty line */
-  if (consume(&line, "\n")) { cur_line_empty = 1; return flags; }
+  if (consume(&line, "\n")) { cur_line_empty = 1; }
 
   /* header underline, skip line */
   if (consume(&line, "====")) { return flags; }
