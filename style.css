@@ -1,16 +1,15 @@
 body.markdown-body {
     font-family: "Open Sans", Arial;
-    max-width: 900px;
     margin: 40px auto;
     padding: 0 10px;
-
-    /* same as div.markdown-body */
-    font-size: 18px;
-    line-height: 1.6;
-    overflow: auto;
+    max-width: 1024px;
 }
 
 div.markdown-body {
+    max-width: 1024px;
+}
+
+.markdown-body {
     font-size: 18px;
     line-height: 1.6;
     overflow: auto;
