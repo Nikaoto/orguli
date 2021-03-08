@@ -3,7 +3,11 @@ body.markdown-body {
     max-width: 900px;
     margin: 40px auto;
     padding: 0 10px;
-    font-size: 18px;  
+
+    /* same as div.markdown-body */
+    font-size: 18px;
+    line-height: 1.6;
+    overflow: auto;
 }
 
 div.markdown-body {
