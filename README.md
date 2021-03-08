@@ -18,7 +18,7 @@ do
 done
 ```
 
-I use orguli to render README files in my [private git repositories](git.nikaoto.com)
+I use orguli to render README files in my [private git repositories](https://git.nikaoto.com)
 by passing orguli to cgit.
 
 ## Install
