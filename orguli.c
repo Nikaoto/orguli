@@ -136,6 +136,19 @@ int write_inline_link(FILE *fp, char **p, int flags) {
   }
 }
 
+/* parses http(s):// links automatically */
+int write_auto_link(FILE *fp, char **p, int flags) {
+  char url[URLBUF_SIZE];
+  if (strstr(*p, "://") == *p || strstr(*p, "s://") == *p){
+    *p = copy_until(url, *p, " \t");
+    fprintf(fp, "<a href=\"http%s\">http%s</a>", url, url);
+    return flags;
+  } else {
+    fprintf(fp, "http");
+    return write_text(fp, url, flags);
+  }
+}
+
 /* writes open/close tag and toggles flag f */
 int edge(FILE *fp, int flags, int f, char *tag) {
   if (flags & f) {
@@ -221,9 +234,10 @@ top:
           goto top;
         }
         if (consume(&p,  "@")) { flags = write_embedded(fp, &p, flags); goto top; }
-        if (consume(&p,  "[")) { flags = write_link(fp, &p, flags);     goto top; }
-        if (consume(&p, "![")) { flags = write_img(fp, &p, flags);      goto top; }
-        if (consume(&p,  "<http")) { flags = write_inline_link(fp, &p, flags); goto top; }
+        if (consume(&p,  "[")) { flags = write_link(fp, &p, flags); goto top; }
+        if (consume(&p, "![")) { flags = write_img(fp, &p, flags); goto top; }
+        if (consume(&p, "<http")) { flags = write_inline_link(fp, &p, flags); goto top; }
+        if (consume(&p, "http")) { flags = write_auto_link(fp, &p, flags); goto top; }
       }
     }
 
