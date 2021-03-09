@@ -278,10 +278,12 @@ top:
         default  : fputc(*p, fp);         break;
       }
     } else {
+      if (*p == '\0' || *p == '\n')
+        return flags;
       fputc(*p, fp);
     }
 
-    if (*p == '\0')
+    if (*p == '\0' || *p == '\n')
       return flags;
   }
 }
