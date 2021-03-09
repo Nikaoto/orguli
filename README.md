@@ -67,6 +67,7 @@ orguli is a fork of rxi's [doq](https://github.com/rxi/doq), which now seems to
 be abandoned. Here is a list of the changes I introduced.
 
 ### Added
+- support for auto-detecting and linking `http(s)://`
 - support for `<inline links like this>`
 - support for `![inline images](image_link)]`
 - support for nested fenced code blocks
@@ -78,6 +79,7 @@ be abandoned. Here is a list of the changes I introduced.
 - `-h|--help` option
 - support for autoclosing tags; drop inline flags at edges of headers, lists,
   and blocks
+- more efficient string functions in place of strstr()
 - support for `**`(strong) and `__`(em).
 - fix for false em, strike, and strong detection on separate chars:<br>
   `2 * 10` will no longer turn into `2 <em> 10`, but `2 *10` will correctly turn
