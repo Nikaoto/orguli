@@ -302,7 +302,7 @@ top:
         default  : fputc(*p, fp);         break;
       }
     } else {
-      if (*p == '\0' || *p == '\n')
+      if (*p == '\0')
         return flags;
       fputc(*p, fp);
     }
@@ -361,8 +361,7 @@ int process_line(FILE *fp, char *line, char *nextline, int flags) {
   /* skip whitespace and count blanks */
   int spaces = 0;
   while (isspace(*line)) {
-    if (isblank(*line))
-      spaces++;
+    if (isblank(*line)) { spaces++; }
     line++;
   }
 
