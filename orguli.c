@@ -193,7 +193,7 @@ int edge2(FILE *fp, int flags, int f, char *tag1, char *tag2) {
 
 /* autocloses tag and drops flag f */
 int drop(FILE *fp, int flags, int f, char *tag) {
-  if (tag)
+  if (tag && (flags & f))
     fprintf(fp, "</%s>", tag);
   return flags & ~f;
 }
