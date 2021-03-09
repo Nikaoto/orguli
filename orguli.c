@@ -35,6 +35,16 @@ int nesting = 0; /* for nested list items */
 
 int write_text(FILE *fp, char *text, int flags);
 
+/* return 1 if str ends with pat, 0 otherwise */
+int strend(char *str, char *pat) {
+  size_t sl = 0, pl = strlen(pat);
+  while (str[sl]) {
+    sl++;
+  }
+  if (sl < pl) return 0;
+  return !strncmp(str + sl - pl, pat, pl);
+}
+
 char* copy_until(char *dst, char *src, char *chars) {
   while (*src && !strchr(chars, *src)) {
     if (*src == '\\') { *dst++ = *src++; }
@@ -78,7 +88,7 @@ int write_embedded(FILE *fp, char **p, int flags) {
   *p = copy_until(name, *p, "\n :]*");
   FILE *in = fopen(name, "rb");
   if (in) {
-    if (strstr(name, ".png") || strstr(name, ".jpg") || strstr(name, ".gif")) {
+    if (strend(name, ".png") || strend(name, ".jpg") || strend(name, ".gif")) {
       fprintf(fp, "<img src=\"data:image;base64, ");
       write_b64_fp(fp, in);
       fprintf(fp, "\"/>\n");
@@ -387,7 +397,7 @@ int main(int argc, char **argv) {
       return 1;
     } else if (!strncmp(argv[i], "-s", 2) || !strncmp(argv[i], "--single-file", 13)) {
       single_file = 1;
-    } else if (strstr(argv[i], ".css")) {
+    } else if (strend(argv[i], ".css")) {
       css = fopen(argv[i], "rb");
       if (!css) { fprintf(stderr, "error: failed to open .css file\n"); return 1; }
     } else {
