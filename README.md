@@ -55,8 +55,29 @@ orguli complies with the *right* half of markdown, meaning the parts which most
 people know and use, mostly in their READMEs.
 
 Due to the design, anything that can't be determined with a single-line
-lookahead will forever be unsupported. This includes footnotes, reflinks, and
-nesting levels higher than 2.
+lookahead will forever be unsupported. This nesting levels higher than 2,
+footnotes, and reflinks. However, the latter two can be implemented with simple
+preprocessors that convert them into html or markdown that orguli supports.
+For example, with the input file `input.md`:
+```
+This is [my reflink][my-reflink].
+
+[my-reflink]: https://example.com
+```
+we can build a pipeline
+```
+process-reflinks input.md | orguli > output.html
+```
+where `process-reflinks` reads `input.md` completely and outputs
+```
+This is [my reflink](https://example.com)
+```
+or
+```
+This is <a href="https://example.com">my reflink</a>
+```
+orguli would handle both variants easily, converting the first one and skipping
+the html in the second.
 
 The only extra feature not present in markdown is the `@filename` specifier,
 which embeds images and text directly. This is extremely useful for single-file
@@ -67,6 +88,7 @@ orguli is a fork of rxi's [doq](https://github.com/rxi/doq), which now seems to
 be abandoned. Here is a list of the changes I introduced.
 
 ### Added
+- support for list items starting with `- ` and `+ `
 - support for auto-detecting and linking `http(s)://`
 - support for `<inline links like this>`
 - support for `![inline images](image_link)]`
