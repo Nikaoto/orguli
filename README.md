@@ -1,7 +1,7 @@
 # orguli
 orguli is a small tool that takes a markdown file with an optional style sheet
 and outputs html. It does half of what fully-fledged markdown parsers do with a
-tenth of the size (single <500loc C file).
+tenth of the size (single ~500loc C file).
 
 ## Usage
 For single-file documents:
@@ -70,6 +70,7 @@ be abandoned. Here is a list of the changes I introduced.
 - support for auto-detecting and linking `http(s)://`
 - support for `<inline links like this>`
 - support for `![inline images](image_link)]`
+- support for `[![images nested in links](img_src)](link_href)`
 - support for nested fenced code blocks
 - support for `<pre><code> code blocks </code></pre>` with edge2
 - support fot nested lists (only 2 levels deep!)
