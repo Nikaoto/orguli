@@ -2,9 +2,10 @@
 #include <string.h>
 #include <ctype.h>
 
-#define LINEBUF_SIZE 4096
-#define URLBUF_SIZE  1024
-#define NAMEBUF_SIZE 1024
+#define LINEBUF_SIZE     4096
+#define URLBUF_SIZE      1024
+#define NAMEBUF_SIZE     1024
+#define MAX_DIGITS_IN_OL 10
 
 char *help_string =
   "usage: orguli [OPTION] [doc.md] [style.css] > output.html\n"
@@ -24,9 +25,10 @@ enum {
   EM     = 1 << 8,
   STRONG = 1 << 9,
   STRIKE = 1 << 10,
-  LIST   = 1 << 11,
-  QUOTE  = 1 << 12,
-  IND    = 1 << 13, /* on when inside indentation */
+  UL     = 1 << 11,
+  OL     = 1 << 12,
+  QUOTE  = 1 << 13,
+  IND    = 1 << 14, /* on, when inside indentation */
 };
 
 int prev_line_header = 0;
@@ -371,24 +373,64 @@ int process_line(FILE *fp, char *line, char *nextline, int flags) {
     flags = edge(fp, flags, QUOTE, "blockquote");
   }
 
-  /* list */
+  /* ordered (numbered) list */
+  if (isdigit(*line)) {
+    char *p = line;
+    char digits[MAX_DIGITS_IN_OL + 1];
+    size_t i = 0;
+    while (isdigit(*line) && i < MAX_DIGITS_IN_OL) {
+      digits[i++] = *line;
+      line++;
+    }
+
+    if (i < MAX_DIGITS_IN_OL && (consume(&line, ".") || consume(&line, ")"))) {
+      digits[i++] = '\0';
+      flags = drop_inlines(fp, flags);
+      if (flags & OL) {
+        /* nesting */
+        if (spaces > nesting) {
+          fprintf(fp, "<ol>");
+        } else if (spaces < nesting) {
+          if (flags & UL)
+            fprintf(fp, "</ul>");
+          else
+            fprintf(fp, "</ol>");
+        }
+      } else {
+        flags = edge(fp, flags, OL, "ol");
+      }
+      nesting = spaces;
+      fprintf(fp, "<li value=\"%s\">", digits);
+    } else {
+      line = p;
+    }
+  } else if ((flags & OL) && !*line) {
+    if (nesting) { fprintf(fp, "</ol>"); nesting = 0; }
+    flags = edge(fp, flags, OL, "ol");
+    flags = drop_inlines(fp, flags);
+  }
+
+  /* unordered list */
   if (consume(&line, "* ") || consume (&line, "- ") || consume (&line, "+ ")) {
     flags = drop_inlines(fp, flags);
-    if (flags & LIST) {
+    if (flags & UL) {
       /* nesting */
       if (spaces > nesting) {
         fprintf(fp, "<ul>");
       } else if (spaces < nesting) {
-        fprintf(fp, "</ul>");
+        if (flags & OL)
+          fprintf(fp, "</ol>");
+        else
+          fprintf(fp, "</ul>");
       }
     } else {
-      flags = edge(fp, flags, LIST, "ul");
+      flags = edge(fp, flags, UL, "ul");
     }
     nesting = spaces;
     fprintf(fp, "<li>");
-  } else if (flags & LIST && !*line) {
+  } else if (flags & UL && !*line) {
     if (nesting) { fprintf(fp, "</ul>"); nesting = 0; }
-    flags = edge(fp, flags, LIST, "ul");
+    flags = edge(fp, flags, UL, "ul");
     flags = drop_inlines(fp, flags);
   }
 
