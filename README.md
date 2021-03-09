@@ -88,6 +88,8 @@ orguli is a fork of rxi's [doq](https://github.com/rxi/doq), which now seems to
 be abandoned. Here is a list of the changes I introduced.
 
 ### Added
+- support for nested lists 2 levels deep
+- support for numbered lists and mixed nesting
 - support for list items starting with `- ` and `+ `
 - support for auto-detecting and linking `http(s)://`
 - support for `<inline links like this>`
@@ -95,7 +97,6 @@ be abandoned. Here is a list of the changes I introduced.
 - support for `[![images nested in links](img_src)](link_href)`
 - support for nested fenced code blocks
 - support for `<pre><code> code blocks </code></pre>` with edge2
-- support fot nested lists (only 2 levels deep!)
 - single line lookahead (to support h1 and h2 with `====` and h2 `----`)
 - `-s|--single-file` option, which outputs `<head>` and others. When omitted,
   output without `<head>`
@@ -111,7 +112,6 @@ be abandoned. Here is a list of the changes I introduced.
 - support for inline html, including `<br>` tags
 - comments where necessary
 - `.markdown-body` class to main `<div>` or `<body>`
-- `style.css` file
 - support for h4 and h5
 - support for indented code blocks
 
