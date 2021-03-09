@@ -29,6 +29,7 @@ enum {
   IND    = 1 << 13, /* on when inside indentation */
 };
 
+int prev_line_header = 0;
 int cur_line_empty = 0, prev_line_empty = 0; /* for indented code blocks */
 int indentation = 0; /* for indented fenced code blocks */
 int nesting = 0; /* for nested list items */
@@ -391,18 +392,6 @@ int process_line(FILE *fp, char *line, char *nextline, int flags) {
     flags = drop_inlines(fp, flags);
   }
 
-  /* new paragraph */
-  if (!*line) { drop_inlines(fp, flags); fprintf(fp, "<p>"); }
-
-  /* header */
-  if (strstart(nextline, "====")) { flags = edge(fp, flags, H1, "h1"); }
-  if (strstart(nextline, "----")) { flags = edge(fp, flags, H2, "h2"); }
-  if (consume(&line,     "# ")) { flags = edge(fp, flags, H1, "h1"); }
-  if (consume(&line,    "## ")) { flags = edge(fp, flags, H2, "h2"); }
-  if (consume(&line,   "### ")) { flags = edge(fp, flags, H3, "h3"); }
-  if (consume(&line,  "#### ")) { flags = edge(fp, flags, H4, "h4"); }
-  if (consume(&line, "##### ")) { flags = edge(fp, flags, H5, "h5"); }
-
   /* indented code block */
   /* TODO: check if spaces > nesting bugs */
   if (spaces > nesting && nextline[0] == '\n' && prev_line_empty) {
@@ -410,6 +399,22 @@ int process_line(FILE *fp, char *line, char *nextline, int flags) {
     flags = write_text(fp, line, flags);
     return edge2(fp, flags, PRE | CODE, "pre", "code");
   }
+
+  /* new paragraph */
+  if (*line == '\0' || prev_line_header) {
+    flags = drop_inlines(fp, flags);
+    fprintf(fp, "<p>");
+  }
+  prev_line_header = 0;
+
+  /* header */
+  if (strstart(nextline, "====")) { prev_line_header = 1; flags = edge(fp, flags, H1, "h1"); }
+  if (strstart(nextline, "----")) { prev_line_header = 1; flags = edge(fp, flags, H2, "h2"); }
+  if (consume(&line,     "# ")) { prev_line_header = 1; flags = edge(fp, flags, H1, "h1"); }
+  if (consume(&line,    "## ")) { prev_line_header = 1; flags = edge(fp, flags, H2, "h2"); }
+  if (consume(&line,   "### ")) { prev_line_header = 1; flags = edge(fp, flags, H3, "h3"); }
+  if (consume(&line,  "#### ")) { prev_line_header = 1; flags = edge(fp, flags, H4, "h4"); }
+  if (consume(&line, "##### ")) { prev_line_header = 1; flags = edge(fp, flags, H5, "h5"); }
 
   /* write text */
   flags = write_text(fp, line, flags);
@@ -420,6 +425,7 @@ int process_line(FILE *fp, char *line, char *nextline, int flags) {
   if (flags & H3) { flags = drop_inlines(fp, edge(fp, flags, H3, "h3")); }
   if (flags & H4) { flags = drop_inlines(fp, edge(fp, flags, H4, "h4")); }
   if (flags & H5) { flags = drop_inlines(fp, edge(fp, flags, H5, "h5")); }
+
   return flags;
 }
 
