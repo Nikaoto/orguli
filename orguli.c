@@ -34,6 +34,7 @@ int indentation = 0; /* for indented fenced code blocks */
 int nesting = 0; /* for nested list items */
 
 int write_text(FILE *fp, char *text, int flags);
+int write_img(FILE *fp, char **p, int flags, int link);
 
 /* return 1 if str ends with pat, 0 otherwise */
 int strend(char *str, char *pat) {
@@ -118,12 +119,31 @@ int write_embedded(FILE *fp, char **p, int flags) {
 /* parses [text](url) into <a> tag */
 int write_link(FILE *fp, char **p, int flags) {
   char text[NAMEBUF_SIZE], url[URLBUF_SIZE];
+
+  /* nested link [![imgname](src)](url) into <a><img></a>*/
+  if (consume(p, "![")) {
+    char *tmp = *p;
+    while (*tmp != '\0' && *tmp != ')') {
+      tmp++;
+    }
+
+    consume(&tmp, ")](");
+    tmp = copy_until(url, tmp, ")");
+    fprintf(fp, "<a href=\"%s\">", url);
+    flags = write_img(fp, p, flags, 0);
+    fprintf(fp, "</a>");
+    *p = tmp;
+    consume(p, ")");
+    return flags;
+  }
+
+  /* unnested link */
   *p = copy_until(text, *p, "]");
   if (consume(p, "](")) {
     *p = copy_until(url, *p, ")");
     consume(p, ")");
     fprintf(fp, "<a href=\"%s\">", url);
-    write_text(fp, text, flags);
+    flags = write_text(fp, text, flags);
     fprintf(fp, "</a>");
     return flags;
   }
@@ -131,14 +151,18 @@ int write_link(FILE *fp, char **p, int flags) {
   return write_text(fp, text, flags);
 }
 
-/* parses ![text](url) into <a><img> tags */
-int write_img(FILE *fp, char **p, int flags) {
+/* parses ![text](url) into <img> tag if link is 0
+   otherwise, into <a><img></a> */
+int write_img(FILE *fp, char **p, int flags, int link) {
   char text[NAMEBUF_SIZE], url[URLBUF_SIZE];
   *p = copy_until(text, *p, "]");
   if (consume(p, "](")) {
     *p = copy_until(url, *p, ")");
     consume(p, ")");
-    fprintf(fp, "<a href=\"%s\"><img alt=\"%s\" src=\"%s\" /></a>\n", url, text, url);
+
+    if (link) fprintf(fp, "<a href=\"%s\">", url);
+    fprintf(fp, "<img alt=\"%s\" src=\"%s\" />", text, url);
+    if (link) fprintf(fp, "</a>");
     return flags;
   } else {
     fputc('[', fp);
@@ -257,7 +281,7 @@ top:
         }
         if (consume(&p,  "@")) { flags = write_embedded(fp, &p, flags); goto top; }
         if (consume(&p,  "[")) { flags = write_link(fp, &p, flags); goto top; }
-        if (consume(&p, "![")) { flags = write_img(fp, &p, flags); goto top; }
+        if (consume(&p, "![")) { flags = write_img(fp, &p, flags, 1); goto top; }
         if (consume(&p, "<http")) { flags = write_inline_link(fp, &p, flags); goto top; }
         if (consume(&p, "http")) { flags = write_auto_link(fp, &p, flags); goto top; }
       }
