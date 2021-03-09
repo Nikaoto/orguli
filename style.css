@@ -1,7 +1,6 @@
 body.markdown-body {
     font-family: "Open Sans", Arial;
     margin: 40px auto;
-    padding: 0 10px;
     max-width: 1024px;
 }
 
@@ -13,6 +12,7 @@ div.markdown-body {
     font-size: 18px;
     line-height: 1.6;
     overflow: auto;
+    padding: 0 2em;
 }
 
 .markdown-body>*:first-child {
