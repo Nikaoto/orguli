@@ -346,23 +346,31 @@ int process_line(FILE *fp, char *line, char *nextline, int flags) {
   if (flags & (PRE|IND)) { line = skip_indentation(line, indentation); }
   if (flags & PRE) { return write_text(fp, line, flags); }
 
+  /* skip whitespace and count blanks */
+  int spaces = 0;
+  while (isspace(*line)) {
+    if (isblank(*line)) { spaces++; }
+    line++;
+  }
+
   /* hr */
   if (consume(&line, "---") || consume(&line, "___")) {
+    if (spaces == 0) {
+      flags = drop(fp, flags, UL, "ul");
+      flags = drop(fp, flags, OL, "ol");
+    }
     fprintf(fp, "<hr>");
     return drop_inlines(fp, flags);
   }
 
   /* hr thick */
   if (consume (&line, "===")) {
+    if (spaces == 0) {
+      flags = drop(fp, flags, UL, "ul");
+      flags = drop(fp, flags, OL, "ol");
+    }
     fprintf(fp, "<hr class=\"thick\">");
     return drop_inlines(fp, flags);
-  }
-
-  /* skip whitespace and count blanks */
-  int spaces = 0;
-  while (isspace(*line)) {
-    if (isblank(*line)) { spaces++; }
-    line++;
   }
 
   /* quote */
