@@ -149,14 +149,13 @@ int write_inline_link(FILE *fp, char **p, int flags) {
 /* parses http(s):// links automatically */
 int write_auto_link(FILE *fp, char **p, int flags) {
   char url[URLBUF_SIZE];
-  if (strstr(*p, "://") == *p || strstr(*p, "s://") == *p){
-    *p = copy_until(url, *p, " \t");
+  *p = copy_until(url, *p, " \t\n");
+  if (strstr(url, "://") == url || strstr(url, "s://") == url) {
     fprintf(fp, "<a href=\"http%s\">http%s</a>", url, url);
     return flags;
-  } else {
-    fprintf(fp, "http");
-    return write_text(fp, url, flags);
   }
+  fprintf(fp, "http");
+  return write_text(fp, url, flags);
 }
 
 /* writes open/close tag and toggles flag f */
