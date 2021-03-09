@@ -372,7 +372,7 @@ int process_line(FILE *fp, char *line, char *nextline, int flags) {
   }
 
   /* list */
-  if (consume(&line, "* ") || consume (&line, "- ")) {
+  if (consume(&line, "* ") || consume (&line, "- ") || consume (&line, "+ ")) {
     flags = drop_inlines(fp, flags);
     if (flags & LIST) {
       /* nesting */
