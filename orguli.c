@@ -45,6 +45,19 @@ int strend(char *str, char *pat) {
   return !strncmp(str + sl - pl, pat, pl);
 }
 
+/* return 1 if str starts with pat, 0 otherwise */
+int strstart(char *str, char *pat) {
+  if (!*str || !*pat) { return 0; }
+  while (str && pat && *str == *pat) {
+    str++;
+    pat++;
+  }
+  if (!*str && !*pat) { return 1; }
+  if (!*str) { return 0; }
+  if (!*pat) { return 1; }
+  return 0;
+}
+
 char* copy_until(char *dst, char *src, char *chars) {
   while (*src && !strchr(chars, *src)) {
     if (*src == '\\') { *dst++ = *src++; }
@@ -150,7 +163,7 @@ int write_inline_link(FILE *fp, char **p, int flags) {
 int write_auto_link(FILE *fp, char **p, int flags) {
   char url[URLBUF_SIZE];
   *p = copy_until(url, *p, " \t\n");
-  if (strstr(url, "://") == url || strstr(url, "s://") == url) {
+  if (strstart(url, "://") || strstart(url, "s://")) {
     fprintf(fp, "<a href=\"http%s\">http%s</a>", url, url);
     return flags;
   }
@@ -356,8 +369,8 @@ int process_line(FILE *fp, char *line, char *nextline, int flags) {
   if (!*line) { drop_inlines(fp, flags); fprintf(fp, "<p>"); }
 
   /* header */
-  if (strstr(nextline, "====") == nextline) { flags = edge(fp, flags, H1, "h1"); }
-  if (strstr(nextline, "----") == nextline) { flags = edge(fp, flags, H2, "h2"); }
+  if (strstart(nextline, "====")) { flags = edge(fp, flags, H1, "h1"); }
+  if (strstart(nextline, "----")) { flags = edge(fp, flags, H2, "h2"); }
   if (consume(&line,     "# ")) { flags = edge(fp, flags, H1, "h1"); }
   if (consume(&line,    "## ")) { flags = edge(fp, flags, H2, "h2"); }
   if (consume(&line,   "### ")) { flags = edge(fp, flags, H3, "h3"); }
