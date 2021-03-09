@@ -6,11 +6,12 @@ tenth of the size (single ~500loc C file).
 ## Usage
 For single-file documents:
 ```bash
-orguli -s README.md style.css > readme.html
+$ orguli -s README.md style.css > readme.html
 ```
 
 For part of a larger document (to concatenate/process/pipe content):
 ```bash
+#! /bin/bash
 # Processes and converts all md files to html
 for file in *.md
 do
@@ -22,10 +23,9 @@ done
 ```
 
 To pipe content to orguli and specify a stylesheet at the same time, specify
-`/dev/stdin` as the input markdown file:
+`/dev/stdin` as the input file:
 ```
-# Use /dev/stdin as the input file
-cat README.md | orguli /dev/stdin style.css | sed 's/http:/https:/g' > out.html
+$ cat README.md | orguli /dev/stdin style.css | sed 's/http:/https:/g' > out.html
 ```
 
 I use orguli to render README files in my [private git repositories](https://git.nikaoto.com)
@@ -65,8 +65,8 @@ This is [my reflink][my-reflink].
 [my-reflink]: https://example.com
 ```
 we can build a pipeline
-```
-process-reflinks input.md | orguli > output.html
+```bash
+$ process-reflinks input.md | orguli > output.html
 ```
 where `process-reflinks` reads `input.md` completely and outputs
 ```
