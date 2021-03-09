@@ -272,34 +272,38 @@ div#cgit .markdown-body h1 a.toclink, div#cgit .markdown-body h2 a.toclink, div#
     text-align: right;
 }
 
+/* Inline code */
 .markdown-body code {
-    font-size: 85%;
-    font-family: monospace;
+    font-size: 14.5px;
     margin: 0 2px;
     padding: 2px 5px;
+    background-color: #f6f6f6;
     border: 1px solid #dadada;
     border-radius: 3px;
-    background-color: #f6f6f6;
+    font-family: monospace; 
 }
 
-.markdown-body pre {
-    font-family: monospace;
-    font-size: 90%;
-    white-space: pre;
-    background-color: #f8f8f8;
-    border: 1px solid #ccc;
-    border-radius: 3px;
-    line-height: 1.45;
-    padding: 6px 10px;
-    overflow: auto;
-}
-
+/* Code block */
 .markdown-body pre>code {
-    white-space: pre;
+    font-size: 14.5px;
     margin: 0;
     padding: 0;
     background-color: transparent;
     border: none;
+    white-space: pre;
+}
+
+/* Could be ascii README.txt */
+.markdown-body pre {
+    font-family: monospace;
+    font-size: 17px;
+    line-height: 1.45;
+    padding: 6px 10px;
+    background-color: #f8f8f8;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    white-space: pre;
+    overflow: auto;
 }
 
 .markdown-body kbd {
