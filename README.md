@@ -37,28 +37,47 @@ Run `./build.sh` and then `sudo install -m755 orguli /usr/local/bin/.`
 ## Why?
 - No parser does what I want. Most of them have weird ways of behaving, which
   are not documented and only defined in code.
-- Too many unnecessary features. The Markdown language is
-  [surprizingly large](https://spec.commonmark.org/current/) and most people
-  don't even use half of it, especially when it comes to README.md files.
-- Extending the other tools is hard. A single C99 file is easier to modify and
-  I've found that it's faster to just extend orguli than learn the quirks of
-  some large parser though trial and error. orguli also has it's quirks as well,
-  but they're easier to learn and avoid.
-- Other parsers are meant for untrusted use. orguli has no security at all and
-  is only to be used by trusted users. This might seem like a disadvantage, but
-  lack of security allows for less and easier to understand and modify code.
-  When I just want a simple `md2html` binary for my website, I don't care about
-  XSS attacks. I can probably trust myself not to pwn me.
+- Rules too complicated. Parsing malformed Markdown is
+  [surprizingly complicated](https://spec.commonmark.org/current/)
+  and most people don't write complicated things with it, especially when it
+  comes to README.md files.
+- Extending the other tools is hard compared to a single C99 file. I've found
+  that it's faster to just extend orguli than learn the quirks of some large
+  parser though trial and error. orguli has it's quirks as well, but they're
+  easier to learn and avoid.
+- Other parsers are meant for untrusted use, thus adding even more code and
+  complications to parsing. orguli has no security at all and is only to be used
+  by trusted users. When I just want a simple `md2html` binary for my website, I
+  don't care about XSS attacks. I can probably trust myself not to pwn me.
 
-## Limitations
-orguli complies with the *right* half of markdown, meaning the parts which most
-people know and use, mostly in their READMEs.
+## Features
+orguli supports most features defined in
+[CommonMark](https://spec.commonmark.org/current/) and
+[the extended syntax](https://www.markdownguide.org/extended-syntax).
+I chose the parts which most people know and use, mostly in their READMEs.
 
+### Missing features
 Due to the design, anything that can't be determined with a single-line
-lookahead will forever be unsupported. This nesting levels higher than 2,
-footnotes, and reflinks. However, the latter two can be implemented with simple
-preprocessors that convert them into html or markdown that orguli supports.
-For example, with the input file `input.md`:
+lookahead will forever be unsupported. This means orguli can never support
+nesting deeper than 2 levels.
+
+#### Missing features I plan to support:
+1. heading ids
+2. emoji
+3. task lists
+
+#### Missing features which can be added with the help of preprocessors:
+1. markdown tables (html `<table>`s already work normally)
+2. definition lists
+3. footnotes
+4. reflinks
+
+These features can be implemented with the help of simple preprocessors that
+convert unsupported markup into markup that orguli understands or just html
+which orguli will skip over.
+
+For example, given the input file `input.md`:
+
 ```
 This is [my reflink][my-reflink].
 
@@ -79,12 +98,16 @@ This is <a href="https://example.com">my reflink</a>
 orguli would handle both variants easily, converting the first one and skipping
 the html in the second.
 
+Writing and maintaining small preprocessors like these for whichever feature one
+wants is easier than modifying programs even as small as orguli.
+
+### Extra features
 The only extra feature not present in markdown is the `@filename` specifier,
 which embeds images and text directly. This is extremely useful for single-file
 documents.
 
 ## Changes
-orguli is a fork of rxi's [doq](https://github.com/rxi/doq), which now seems to
+orguli is based on rxi's [doq](https://github.com/rxi/doq), which now seems to
 be abandoned. Here is a list of the changes I introduced.
 
 ### Added
