@@ -287,9 +287,6 @@ top:
       }
     }
 
-    if (*p == '\0')
-      return flags;
-
     if (*p == '\\' || flags & CODE) {
       if (*p == '\\') { p++; }
       switch (*p) {
@@ -298,7 +295,7 @@ top:
         case '&' : fprintf(fp, "&amp;");  break;
         case '"' : fprintf(fp, "&quot;"); break;
         case '\'': fprintf(fp, "&apos;"); break;
-        case '\0': break;
+        case '\0': fputc('\n', fp);       break;
         default  : fputc(*p, fp);         break;
       }
     } else {
