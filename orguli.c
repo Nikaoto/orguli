@@ -345,7 +345,7 @@ int process_line(FILE *fp, char *line, char *nextline, int flags) {
   if (flags & PRE) { return write_text(fp, line, flags); }
 
   /* hr */
-  if (consume (&line, "---")) {
+  if (consume(&line, "---") || consume(&line, "___")) {
     fprintf(fp, "<hr>");
     return drop_inlines(fp, flags);
   }

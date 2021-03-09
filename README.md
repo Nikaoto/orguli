@@ -107,7 +107,7 @@ be abandoned. Here is a list of the changes I introduced.
 - fix for false em, strike, and strong detection on separate chars:<br>
   `2 * 10` will no longer turn into `2 <em> 10`, but `2 *10` will correctly turn
   into `2 <em>10`
-- support for `<hr>` (`---` for `<hr>`, `===` for `<hr class="thick">`)
+- support for `<hr>` (`---` and `___` for `<hr>`, `===` for `<hr class="thick">`)
 - support for inline html, including `<br>` tags
 - comments where necessary
 - `.markdown-body` class to main `<div>` or `<body>`
