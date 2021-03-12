@@ -6,7 +6,7 @@ tenth of the size (single ~500loc C file).
 ## Usage
 For single-file documents:
 ```bash
-$ orguli -s README.md style.css > readme.html
+$ orguli -s README.md style.css > README.html
 ```
 
 For part of a larger document (to concatenate/process/pipe content):
