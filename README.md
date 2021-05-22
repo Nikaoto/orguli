@@ -138,7 +138,7 @@ be abandoned. Here is a list of the changes I introduced.
 - support for h4 and h5
 - support for indented code blocks
 
-    this will be turned into code
+    this will be turned into code (not on github)
 
 Just like
 ```
