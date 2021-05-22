@@ -113,7 +113,7 @@ be abandoned. Here is a list of the changes I introduced.
 ### Added
 - support for nested lists 2 levels deep
 - support for numbered lists and mixed nesting
-- support for list items starting with `- ` and `+ `
+- support for list items starting with `-` and `+`
 - support for auto-detecting and linking `http(s)://`
 - support for `<inline links like this>`
 - support for `![inline images](image_link)]`
