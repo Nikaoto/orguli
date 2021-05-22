@@ -290,6 +290,12 @@ top:
       }
     }
 
+    /* backslash inside code block */
+    if ((flags & CODE) && *p == '\\') {
+      fputc('\\', fp);
+      continue;
+    }
+
     if (*p == '\\' || flags & CODE) {
       if (*p == '\\') { p++; }
       switch (*p) {
