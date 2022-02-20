@@ -258,7 +258,7 @@ top:
           if (isspace(*p) && isspace(p[-3]))
             fprintf(fp, "__");
           else
-            flags = edge(fp, flags, EM, "em");
+            flags = edge(fp, flags, EM, "strong");
           goto top;
         }
         if (consume(&p, "~~")) {
@@ -279,7 +279,7 @@ top:
           if (isspace(*p) && isspace(p[-2]))
             fprintf(fp, "_");
           else
-            flags = edge(fp, flags, STRONG, "strong");
+            flags = edge(fp, flags, STRONG, "em");
           goto top;
         }
         if (consume(&p,  "@")) { flags = write_embedded(fp, &p, flags); goto top; }
