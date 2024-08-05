@@ -275,6 +275,7 @@ top:
             flags = edge(fp, flags, EM, "em");
           goto top;
         }
+        /* NOTE: I don't use _this_ for italics, so ignore it
         if (consume(&p,  "_")) {
           if (isspace(*p) && isspace(p[-2]))
             fprintf(fp, "_");
@@ -282,6 +283,7 @@ top:
             flags = edge(fp, flags, STRONG, "em");
           goto top;
         }
+        */
         if (consume(&p,  "@")) { flags = write_embedded(fp, &p, flags); goto top; }
         if (consume(&p,  "[")) { flags = write_link(fp, &p, flags); goto top; }
         if (consume(&p, "![")) { flags = write_img(fp, &p, flags, 1); goto top; }
