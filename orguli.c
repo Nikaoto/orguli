@@ -519,9 +519,9 @@ int main(int argc, char **argv) {
     write_fp(stdout, css);
   } else {
     fprintf(stdout,
-      "body{margin:60px auto;max-width:750px;line-height:1.6;"
-      "font-family:\"Open Sans\",Arial;color:#444;padding:0 10px;}"
-      "h1,h2,h3,h4{line-height:1.2;padding-top: 14px;}");
+      "body{margin:60px auto;max-width:680px;line-height:1.6;"
+      "font-family:\"Open Sans\",Arial;padding:0 10px;}"
+      "h1,h2,h3,h4,h5{line-height:1.2;padding-top: 14px;}");
   }
   fprintf(stdout, "</style>");
 
